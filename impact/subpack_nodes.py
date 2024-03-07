@@ -3,12 +3,15 @@ import folder_paths
 import impact.core as core
 import impact.subcore as subcore
 from impact.utils import add_folder_path_and_extensions
+from comfy.cli_args import args
 
 version_code = 20
 
 print(f"### Loading: ComfyUI-Impact-Pack (Subpack: V0.4)")
 
 model_path = folder_paths.models_dir
+if args.just_ui:
+    model_path = os.path.join(os.path.dirname(args.data_dir), 'models')
 add_folder_path_and_extensions("ultralytics_bbox", [os.path.join(model_path, "ultralytics", "bbox")], folder_paths.supported_pt_extensions)
 add_folder_path_and_extensions("ultralytics_segm", [os.path.join(model_path, "ultralytics", "segm")], folder_paths.supported_pt_extensions)
 add_folder_path_and_extensions("ultralytics", [os.path.join(model_path, "ultralytics")], folder_paths.supported_pt_extensions)
