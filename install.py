@@ -1,13 +1,13 @@
 import os
 import sys
 from torchvision.datasets.utils import download_url
-from comfy.cli_args import args
 
 subpack_path = os.path.join(os.path.dirname(__file__))
 comfy_path = os.path.join(subpack_path, '..', '..', '..')
 
 sys.path.append(comfy_path)
 
+from comfy.cli_args import args
 import folder_paths
 model_path = folder_paths.models_dir
 if args.just_ui:
