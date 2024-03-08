@@ -18,10 +18,10 @@ add_folder_path_and_extensions("ultralytics", [os.path.join(model_path, "ultraly
 if os.path.exists('/stable-diffusion-cache/models/ultralytics/bbox'):
     for bbox_file in os.listdir('/stable-diffusion-cache/models/ultralytics/bbox'):
         if not os.path.exists(os.path.join(model_path, "ultralytics", "bbox", bbox_file)):
-            os.system(f'cp {os.path.join("/stable-diffusion-cache/models/ultralytics/bbox", bbox_file)} {os.path.join(model_path, "ultralytics", "bbox", bbox_file)}')
+            os.popen(f'cp {os.path.join("/stable-diffusion-cache/models/ultralytics/bbox", bbox_file)} {os.path.join(model_path, "ultralytics", "bbox", bbox_file)}')
     for segm_file in os.listdir('/stable-diffusion-cache/models/ultralytics/segm'):
         if not os.path.exists(os.path.join(model_path, "ultralytics", "segm", segm_file)):
-            os.system(f'cp {os.path.join("/stable-diffusion-cache/models/ultralytics/segm", segm_file)} {os.path.join(model_path, "ultralytics", "segm", segm_file)}')
+            os.popen(f'cp {os.path.join("/stable-diffusion-cache/models/ultralytics/segm", segm_file)} {os.path.join(model_path, "ultralytics", "segm", segm_file)}')
     
 
 
