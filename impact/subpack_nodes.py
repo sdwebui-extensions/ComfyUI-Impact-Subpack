@@ -15,6 +15,14 @@ if args.just_ui:
 add_folder_path_and_extensions("ultralytics_bbox", [os.path.join(model_path, "ultralytics", "bbox")], folder_paths.supported_pt_extensions)
 add_folder_path_and_extensions("ultralytics_segm", [os.path.join(model_path, "ultralytics", "segm")], folder_paths.supported_pt_extensions)
 add_folder_path_and_extensions("ultralytics", [os.path.join(model_path, "ultralytics")], folder_paths.supported_pt_extensions)
+if os.path.exists('/stable-diffusion-cache/models/ultralytics/bbox'):
+    for bbox_file in os.listdir('/stable-diffusion-cache/models/ultralytics/bbox'):
+        if not os.path.exists(os.path.join(model_path, "ultralytics", "bbox", bbox_file)):
+            os.system(f'cp {os.path.join("/stable-diffusion-cache/models/ultralytics/bbox", bbox_file)} {os.path.join(model_path, "ultralytics", "bbox", bbox_file)}')
+    for segm_file in os.listdir('/stable-diffusion-cache/models/ultralytics/segm'):
+        if not os.path.exists(os.path.join(model_path, "ultralytics", "segm", segm_file)):
+            os.system(f'cp {os.path.join("/stable-diffusion-cache/models/ultralytics/segm", segm_file)} {os.path.join(model_path, "ultralytics", "segm", segm_file)}')
+    
 
 
 class UltralyticsDetectorProvider:
