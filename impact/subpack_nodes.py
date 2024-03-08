@@ -26,7 +26,8 @@ if os.path.exists('/stable-diffusion-cache/models/ultralytics/bbox'):
         if not os.path.exists(os.path.join(model_path, "ultralytics", "segm", segm_file)):
             bbox_cp_file_pairs.append([os.path.join("/stable-diffusion-cache/models/ultralytics/segm", segm_file), os.path.join(model_path, "ultralytics", "segm", segm_file)])
             # os.popen(f'cp {os.path.join("/stable-diffusion-cache/models/ultralytics/segm", segm_file)} {os.path.join(model_path, "ultralytics", "segm", segm_file)}')
-    async_file_cp(bbox_cp_file_pairs)
+    if not args.just_ui:
+        async_file_cp(bbox_cp_file_pairs)
     
 
 
