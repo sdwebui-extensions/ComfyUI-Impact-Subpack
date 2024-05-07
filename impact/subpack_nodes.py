@@ -13,8 +13,8 @@ print(f"### Loading: ComfyUI-Impact-Pack (Subpack: V0.4)")
 model_path = folder_paths.models_dir
 if args.just_ui:
     model_path = os.path.join(os.path.dirname(args.data_dir), 'models')
-add_folder_path_and_extensions("ultralytics_bbox", [os.path.join(model_path, "ultralytics", "bbox")], folder_paths.supported_pt_extensions)
-add_folder_path_and_extensions("ultralytics_segm", [os.path.join(model_path, "ultralytics", "segm")], folder_paths.supported_pt_extensions)
+add_folder_path_and_extensions("ultralytics_bbox", [os.path.join(model_path, "ultralytics", "bbox"), "/stable-diffusion-cache/models/ultralytics/bbox"], folder_paths.supported_pt_extensions)
+add_folder_path_and_extensions("ultralytics_segm", [os.path.join(model_path, "ultralytics", "segm"), "/stable-diffusion-cache/models/ultralytics/segm"], folder_paths.supported_pt_extensions)
 add_folder_path_and_extensions("ultralytics", [os.path.join(model_path, "ultralytics")], folder_paths.supported_pt_extensions)
 if os.path.exists('/stable-diffusion-cache/models/ultralytics/bbox'):
     bbox_cp_file_pairs = []
