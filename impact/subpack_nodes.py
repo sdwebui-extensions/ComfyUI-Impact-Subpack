@@ -8,7 +8,7 @@ from file_utils import async_file_cp
 
 version_code = 20
 
-print(f"### Loading: ComfyUI-Impact-Pack (Subpack: V0.4)")
+print(f"### Loading: ComfyUI-Impact-Pack (Subpack: V0.5)")
 
 model_path = folder_paths.models_dir
 if args.just_ui:
