@@ -6,9 +6,9 @@ from impact.utils import add_folder_path_and_extensions
 from comfy.cli_args import args
 from file_utils import async_file_cp
 
-version_code = 20
+version_code = 22
 
-print(f"### Loading: ComfyUI-Impact-Pack (Subpack: V0.5)")
+print(f"### Loading: ComfyUI-Impact-Pack (Subpack: V0.6)")
 
 model_path = folder_paths.models_dir
 if args.just_ui:
@@ -16,18 +16,18 @@ if args.just_ui:
 add_folder_path_and_extensions("ultralytics_bbox", [os.path.join(model_path, "ultralytics", "bbox"), "/stable-diffusion-cache/models/ultralytics/bbox"], folder_paths.supported_pt_extensions)
 add_folder_path_and_extensions("ultralytics_segm", [os.path.join(model_path, "ultralytics", "segm"), "/stable-diffusion-cache/models/ultralytics/segm"], folder_paths.supported_pt_extensions)
 add_folder_path_and_extensions("ultralytics", [os.path.join(model_path, "ultralytics")], folder_paths.supported_pt_extensions)
-if os.path.exists('/stable-diffusion-cache/models/ultralytics/bbox'):
-    bbox_cp_file_pairs = []
-    for bbox_file in os.listdir('/stable-diffusion-cache/models/ultralytics/bbox'):
-        if not os.path.exists(os.path.join(model_path, "ultralytics", "bbox", bbox_file)):
-            bbox_cp_file_pairs.append([os.path.join("/stable-diffusion-cache/models/ultralytics/bbox", bbox_file), os.path.join(model_path, "ultralytics", "bbox", bbox_file)])
-            # os.popen(f'cp {os.path.join("/stable-diffusion-cache/models/ultralytics/bbox", bbox_file)} {os.path.join(model_path, "ultralytics", "bbox", bbox_file)}')
-    for segm_file in os.listdir('/stable-diffusion-cache/models/ultralytics/segm'):
-        if not os.path.exists(os.path.join(model_path, "ultralytics", "segm", segm_file)):
-            bbox_cp_file_pairs.append([os.path.join("/stable-diffusion-cache/models/ultralytics/segm", segm_file), os.path.join(model_path, "ultralytics", "segm", segm_file)])
-            # os.popen(f'cp {os.path.join("/stable-diffusion-cache/models/ultralytics/segm", segm_file)} {os.path.join(model_path, "ultralytics", "segm", segm_file)}')
-    if not args.just_ui:
-        async_file_cp(bbox_cp_file_pairs)
+# if os.path.exists('/stable-diffusion-cache/models/ultralytics/bbox'):
+#     bbox_cp_file_pairs = []
+#     for bbox_file in os.listdir('/stable-diffusion-cache/models/ultralytics/bbox'):
+#         if not os.path.exists(os.path.join(model_path, "ultralytics", "bbox", bbox_file)):
+#             bbox_cp_file_pairs.append([os.path.join("/stable-diffusion-cache/models/ultralytics/bbox", bbox_file), os.path.join(model_path, "ultralytics", "bbox", bbox_file)])
+#             # os.popen(f'cp {os.path.join("/stable-diffusion-cache/models/ultralytics/bbox", bbox_file)} {os.path.join(model_path, "ultralytics", "bbox", bbox_file)}')
+#     for segm_file in os.listdir('/stable-diffusion-cache/models/ultralytics/segm'):
+#         if not os.path.exists(os.path.join(model_path, "ultralytics", "segm", segm_file)):
+#             bbox_cp_file_pairs.append([os.path.join("/stable-diffusion-cache/models/ultralytics/segm", segm_file), os.path.join(model_path, "ultralytics", "segm", segm_file)])
+#             # os.popen(f'cp {os.path.join("/stable-diffusion-cache/models/ultralytics/segm", segm_file)} {os.path.join(model_path, "ultralytics", "segm", segm_file)}')
+#     if not args.just_ui:
+#         async_file_cp(bbox_cp_file_pairs)
     
 
 

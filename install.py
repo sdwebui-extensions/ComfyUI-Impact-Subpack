@@ -3,24 +3,36 @@ import sys
 from torchvision.datasets.utils import download_url
 
 subpack_path = os.path.join(os.path.dirname(__file__))
-comfy_path = os.path.join(subpack_path, '..', '..', '..')
+
+comfy_path = os.environ.get('COMFYUI_PATH')
+if comfy_path is None:
+    print(f"\n[bold yellow]WARN: The `COMFYUI_PATH` environment variable is not set. Assuming `{os.path.dirname(__file__)}/../../../` as the ComfyUI path.[/bold yellow]", file=sys.stderr)
+    comfy_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
 
 sys.path.append(comfy_path)
 
-from comfy.cli_args import args
-import folder_paths
-model_path = folder_paths.models_dir
-if args.just_ui:
-    model_path = os.path.join(os.path.dirname(args.data_dir), 'models')
+model_path = os.environ.get('COMFYUI_MODEL_PATH')
+if model_path is None:
+    import folder_paths
+    model_path = folder_paths.models_dir
+    print(f"\n[bold yellow]WARN: The `COMFYUI_MODEL_PATH` environment variable is not set. Assuming `{model_path}` as the ComfyUI path.[/bold yellow]", file=sys.stderr)
+    # model_path = os.path.abspath(os.path.join(comfy_path, 'models'))
+
 ultralytics_bbox_path = os.path.join(model_path, "ultralytics", "bbox")
 ultralytics_segm_path = os.path.join(model_path, "ultralytics", "segm")
 
 if not os.path.exists(os.path.join(subpack_path, '..', '..', 'skip_download_model')):
     if not os.path.exists(ultralytics_bbox_path):
-        os.makedirs(ultralytics_bbox_path)
+        try:
+            os.makedirs(ultralytics_bbox_path, exist_ok=True)
+        except:
+            pass
 
     if not os.path.exists(ultralytics_segm_path):
-        os.makedirs(ultralytics_segm_path)
+        try:
+            os.makedirs(ultralytics_segm_path, exist_ok=True)
+        except:
+            pass
 
     # if not os.path.exists(os.path.join(ultralytics_bbox_path, "face_yolov8m.pt")):
     #     download_url("https://huggingface.co/Bingsu/adetailer/resolve/main/face_yolov8m.pt",
