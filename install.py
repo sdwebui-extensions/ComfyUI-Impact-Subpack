@@ -1,14 +1,13 @@
 import os
 import sys
-# from torchvision.datasets.utils import download_url
 
 subpack_path = os.path.join(os.path.dirname(__file__))
 
 comfy_path = os.environ.get('COMFYUI_PATH')
 if comfy_path is None:
     comfy_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
-    print(f"\nWARN: The `COMFYUI_PATH` environment variable is not set. Assuming `{comfy_path}` as the ComfyUI path.", file=sys.stderr)
-    
+    logging.warning(f"\nWARN: The `COMFYUI_PATH` environment variable is not set. Assuming `{comfy_path}` as the ComfyUI path.")
+
 sys.path.append(comfy_path)
 
 model_path = os.environ.get('COMFYUI_MODEL_PATH')
