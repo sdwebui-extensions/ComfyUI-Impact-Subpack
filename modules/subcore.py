@@ -162,69 +162,11 @@ try:
         from numpy import dtype
         from numpy.dtypes import Float64DType
     except:
-        logging.error("[Impact Subpack] installed 'numpy' is outdated. Please update 'numpy' to 1.26.4")
-        raise Exception("[Impact Subpack] installed 'numpy' is outdated. Please update 'numpy' to 1.26.4")
+        logging.error("[Impact Subpack] installed 'numpy' is outdated. Please update 'numpy>=1.26.4'")
+        raise Exception("[Impact Subpack] installed 'numpy' is outdated. Please update 'numpy>=1.26.4'")
 
 
     torch_whitelist = []
-
-    # https://github.com/comfyanonymous/ComfyUI/issues/5516#issuecomment-2466152838
-    def build_torch_whitelist():
-        """
-        For security, only a limited set of namespaces is allowed during loading.
-
-        Since the same module may be identified by different namespaces depending on the model,
-        some modules are additionally registered with aliases to ensure backward compatibility.
-        """
-        global torch_whitelist
-
-        for name, obj in inspect.getmembers(modules):
-            if inspect.isclass(obj) and obj.__module__.startswith("ultralytics.nn.modules"):
-                aliasObj = type(name, (obj,), {})
-                aliasObj.__module__ = "ultralytics.nn.modules"
-
-                torch_whitelist.append(obj)
-                torch_whitelist.append(aliasObj)
-
-        for name, obj in inspect.getmembers(block_modules):
-            if inspect.isclass(obj) and obj.__module__.startswith("ultralytics.nn.modules"):
-                aliasObj = type(name, (obj,), {})
-                aliasObj.__module__ = "ultralytics.nn.modules.block"
-
-                torch_whitelist.append(obj)
-                torch_whitelist.append(aliasObj)
-
-        for name, obj in inspect.getmembers(loss_modules):
-            if inspect.isclass(obj) and obj.__module__.startswith("ultralytics.utils.loss"):
-                aliasObj = type(name, (obj,), {})
-                aliasObj.__module__ = "ultralytics.yolo.utils.loss"
-
-                torch_whitelist.append(obj)
-                torch_whitelist.append(aliasObj)
-
-        for name, obj in inspect.getmembers(torch_modules):
-            if inspect.isclass(obj) and obj.__module__.startswith("torch.nn.modules"):
-                torch_whitelist.append(obj)
-
-        aliasIterableSimpleNamespace = type("IterableSimpleNamespace", (IterableSimpleNamespace,), {})
-        aliasIterableSimpleNamespace.__module__ = "ultralytics.yolo.utils"
-
-        aliasTaskAlignedAssigner = type("TaskAlignedAssigner", (TaskAlignedAssigner,), {})
-        aliasTaskAlignedAssigner.__module__ = "ultralytics.yolo.utils.tal"
-
-        aliasYOLOv10DetectionModel = type("YOLOv10DetectionModel", (DetectionModel,), {})
-        aliasYOLOv10DetectionModel.__module__ = "ultralytics.nn.tasks"
-        aliasYOLOv10DetectionModel.__name__ = "YOLOv10DetectionModel"
-
-        aliasv10DetectLoss = type("v10DetectLoss", (loss_modules.E2EDetectLoss,), {})
-        aliasv10DetectLoss.__name__ = "v10DetectLoss"
-        aliasv10DetectLoss.__module__ = "ultralytics.utils.loss"
-
-        torch_whitelist += [DetectionModel, aliasYOLOv10DetectionModel, SegmentationModel, IterableSimpleNamespace,
-                            aliasIterableSimpleNamespace, TaskAlignedAssigner, aliasTaskAlignedAssigner, aliasv10DetectLoss,
-                            restricted_getattr, dill._dill._load_type, scalar, dtype, Float64DType]
-
-    build_torch_whitelist()
 
 except Exception as e:
     logging.error(e)
@@ -372,22 +314,8 @@ torch.load = torch_wrapper
 
 
 def load_yolo(model_path: str):
-    # https://github.com/comfyanonymous/ComfyUI/issues/5516#issuecomment-2466152838
-    if hasattr(torch.serialization, 'safe_globals'):
-        with torch.serialization.safe_globals(torch_whitelist):
-            try:
-                return YOLO(model_path)
-            except ModuleNotFoundError:
-                # https://github.com/ultralytics/ultralytics/issues/3856
-                YOLO("yolov8n.pt")
-                return YOLO(model_path)
-    else:
-        try:
-            return YOLO(model_path)
-        except ModuleNotFoundError:
-            YOLO("yolov8n.pt")
-            return YOLO(model_path)
-
+    return YOLO(model_path)
+    
 
 def inference_bbox(
     model,
