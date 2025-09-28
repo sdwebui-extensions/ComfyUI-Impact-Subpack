@@ -87,9 +87,9 @@ def load_whitelist(filepath):
     except FileNotFoundError:
         # This block now runs only if the directory was created successfully but the file is missing
         logging.warning(f"[Impact Pack/Subpack] Model whitelist file not found at: {filepath}. ")
-        logging.warning(f" >> An empty whitelist file will be created.")
-        logging.warning(f" >> To allow unsafe loading for specific trusted legacy models (e.g., older .pt),")
-        logging.warning(f" >> add their base filenames (one per line) to this file.")
+        logging.warning(" >> An empty whitelist file will be created.")
+        logging.warning(" >> To allow unsafe loading for specific trusted legacy models (e.g., older .pt),")
+        logging.warning(" >> add their base filenames (one per line) to this file.")
         try:
             # Attempt to create the file with comments since it wasn't found
             # This should now succeed because os.makedirs created the directory
@@ -139,7 +139,7 @@ def restricted_getattr(obj, name, *args):
     if name != "forward":
         logging.error(f"Access to potentially dangerous attribute '{obj.__module__}.{obj.__name__}.{name}' is blocked.\nIf you believe the use of this code is genuinely safe, please report it.\nhttps://github.com/ltdrdata/ComfyUI-Impact-Subpack/issues")
         raise RuntimeError(f"Access to potentially dangerous attribute '{obj.__module__}.{obj.__name__}.{name}' is blocked.")
-        
+
     return getattr(obj, name, *args)
 
 restricted_getattr.__module__ = 'builtins'
@@ -162,69 +162,11 @@ try:
         from numpy import dtype
         from numpy.dtypes import Float64DType
     except:
-        logging.error("[Impact Subpack] installed 'numpy' is outdated. Please update 'numpy' to 1.26.4")
-        raise Exception("[Impact Subpack] installed 'numpy' is outdated. Please update 'numpy' to 1.26.4")
+        logging.error("[Impact Subpack] installed 'numpy' is outdated. Please update 'numpy>=1.26.4'")
+        raise Exception("[Impact Subpack] installed 'numpy' is outdated. Please update 'numpy>=1.26.4'")
 
 
     torch_whitelist = []
-
-    # https://github.com/comfyanonymous/ComfyUI/issues/5516#issuecomment-2466152838
-    def build_torch_whitelist():
-        """
-        For security, only a limited set of namespaces is allowed during loading.
-
-        Since the same module may be identified by different namespaces depending on the model,
-        some modules are additionally registered with aliases to ensure backward compatibility.
-        """
-        global torch_whitelist
-
-        for name, obj in inspect.getmembers(modules):
-            if inspect.isclass(obj) and obj.__module__.startswith("ultralytics.nn.modules"):
-                aliasObj = type(name, (obj,), {})
-                aliasObj.__module__ = "ultralytics.nn.modules"
-
-                torch_whitelist.append(obj)
-                torch_whitelist.append(aliasObj)
-
-        for name, obj in inspect.getmembers(block_modules):
-            if inspect.isclass(obj) and obj.__module__.startswith("ultralytics.nn.modules"):
-                aliasObj = type(name, (obj,), {})
-                aliasObj.__module__ = "ultralytics.nn.modules.block"
-
-                torch_whitelist.append(obj)
-                torch_whitelist.append(aliasObj)
-
-        for name, obj in inspect.getmembers(loss_modules):
-            if inspect.isclass(obj) and obj.__module__.startswith("ultralytics.utils.loss"):
-                aliasObj = type(name, (obj,), {})
-                aliasObj.__module__ = "ultralytics.yolo.utils.loss"
-
-                torch_whitelist.append(obj)
-                torch_whitelist.append(aliasObj)
-
-        for name, obj in inspect.getmembers(torch_modules):
-            if inspect.isclass(obj) and obj.__module__.startswith("torch.nn.modules"):
-                torch_whitelist.append(obj)
-
-        aliasIterableSimpleNamespace = type("IterableSimpleNamespace", (IterableSimpleNamespace,), {})
-        aliasIterableSimpleNamespace.__module__ = "ultralytics.yolo.utils"
-
-        aliasTaskAlignedAssigner = type("TaskAlignedAssigner", (TaskAlignedAssigner,), {})
-        aliasTaskAlignedAssigner.__module__ = "ultralytics.yolo.utils.tal"
-
-        aliasYOLOv10DetectionModel = type("YOLOv10DetectionModel", (DetectionModel,), {})
-        aliasYOLOv10DetectionModel.__module__ = "ultralytics.nn.tasks"
-        aliasYOLOv10DetectionModel.__name__ = "YOLOv10DetectionModel"
-
-        aliasv10DetectLoss = type("v10DetectLoss", (loss_modules.E2EDetectLoss,), {})
-        aliasv10DetectLoss.__name__ = "v10DetectLoss"
-        aliasv10DetectLoss.__module__ = "ultralytics.utils.loss"
-
-        torch_whitelist += [DetectionModel, aliasYOLOv10DetectionModel, SegmentationModel, IterableSimpleNamespace,
-                            aliasIterableSimpleNamespace, TaskAlignedAssigner, aliasTaskAlignedAssigner, aliasv10DetectLoss,
-                            restricted_getattr, dill._dill._load_type, scalar, dtype, Float64DType]
-
-    build_torch_whitelist()
 
 except Exception as e:
     logging.error(e)
@@ -313,7 +255,7 @@ def torch_wrapper(*args, **kwargs):
                         if filename and filename in _MODEL_WHITELIST:
                             logging.warning("##############################################################################")
                             logging.warning(f"[Impact Pack/Subpack] SUCCESS: File '{filename}' FOUND in reloaded whitelist.")
-                            logging.warning(f" >> Proceeding with whitelisted unsafe load (weights_only=False).")
+                            logging.warning(" >> Proceeding with whitelisted unsafe load (weights_only=False).")
                             logging.warning(f" >> Ensure you recently added this file to: {whitelist_path_msg}")
                             logging.warning(" >> SECURITY RISK: Ensure you trust its source.")
                             logging.warning("##############################################################################")
@@ -332,15 +274,15 @@ def torch_wrapper(*args, **kwargs):
                     # --- Blocked: Not Whitelisted (Original Logic - runs if reload failed or file still not found) ---
                     logging.error("##############################################################################")
                     logging.error(f"[Impact Pack/Subpack] ERROR: Safe load failed for '{filename_arg_source}' (Reason: {e}).")
-                    logging.error(f" >> This model likely uses legacy Python features blocked by default for security.")
+                    logging.error(" >> This model likely uses legacy Python features blocked by default for security.")
                     # Updated log message here:
                     logging.error(f" >> UNSAFE LOAD BLOCKED because the file ('{filename or 'unknown'}') is NOT in the whitelist (even after reload attempt).")
                     logging.error(f" >> Whitelist path: {whitelist_path_msg}")
                     if filename:
-                         logging.error(f" >> To allow loading this specific file (IF YOU TRUST IT), ensure its base name")
+                         logging.error(" >> To allow loading this specific file (IF YOU TRUST IT), ensure its base name")
                          logging.error(f" >> ('{filename}') is correctly added to the whitelist file (one name per line) and saved.")
                     else:
-                         logging.error(f" >> Cannot determine filename to check against whitelist.")
+                         logging.error(" >> Cannot determine filename to check against whitelist.")
                     logging.error(" >> SECURITY RISK: Only whitelist files from sources you absolutely trust.")
                     logging.error(" >> Prefer using .safetensors files whenever available.")
                     logging.error("##############################################################################")
@@ -372,22 +314,8 @@ torch.load = torch_wrapper
 
 
 def load_yolo(model_path: str):
-    # https://github.com/comfyanonymous/ComfyUI/issues/5516#issuecomment-2466152838
-    if hasattr(torch.serialization, 'safe_globals'):
-        with torch.serialization.safe_globals(torch_whitelist):
-            try:
-                return YOLO(model_path)
-            except ModuleNotFoundError:
-                # https://github.com/ultralytics/ultralytics/issues/3856
-                YOLO("yolov8n.pt")
-                return YOLO(model_path)
-    else:
-        try:
-            return YOLO(model_path)
-        except ModuleNotFoundError:
-            YOLO("yolov8n.pt")
-            return YOLO(model_path)
-
+    return YOLO(model_path)
+    
 
 def inference_bbox(
     model,

@@ -9,8 +9,8 @@ def update_model_paths(model_path):
     utils.add_folder_path_and_extensions("ultralytics_bbox", [os.path.join(model_path, "ultralytics", "bbox")], folder_paths.supported_pt_extensions)
     utils.add_folder_path_and_extensions("ultralytics_segm", [os.path.join(model_path, "ultralytics", "segm")], folder_paths.supported_pt_extensions)
     utils.add_folder_path_and_extensions("ultralytics", [os.path.join(model_path, "ultralytics")], folder_paths.supported_pt_extensions)
-    logging.info(f'[Impact Subpack] ultralytics_bbox: {os.path.join(model_path, "ultralytics", "bbox")}')
-    logging.info(f'[Impact Subpack] ultralytics_segm: {os.path.join(model_path, "ultralytics", "segm")}')
+    logging.info(f'[Impact Subpack] ultralytics_bbox: {", ".join(folder_paths.folder_names_and_paths["ultralytics_bbox"][0])}')
+    logging.info(f'[Impact Subpack] ultralytics_segm: {", ".join(folder_paths.folder_names_and_paths["ultralytics_segm"][0])}')
 
 update_model_paths(folder_paths.models_dir)
 if 'download_model_base' in folder_paths.folder_names_and_paths:
@@ -30,6 +30,12 @@ class UltralyticsDetectorProvider:
 
     def doit(self, model_name):
         model_path = folder_paths.get_full_path("ultralytics", model_name)
+
+        if model_path is None:
+            if model_name.startswith('bbox/'):
+                model_path = folder_paths.get_full_path("ultralytics_bbox", model_name[5:])
+            elif model_name.startswith('segm/'):
+                model_path = folder_paths.get_full_path("ultralytics_segm", model_name[5:])
 
         if model_path is None:
             logging.error(f"[Impact Subpack] model file '{model_name}' is not found in one of the following directories:")
