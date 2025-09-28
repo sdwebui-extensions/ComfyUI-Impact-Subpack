@@ -146,32 +146,32 @@ restricted_getattr.__module__ = 'builtins'
 restricted_getattr.__name__ = 'getattr'
 
 
-try:
-    from ultralytics import YOLO
-    from ultralytics.nn.tasks import DetectionModel
-    from ultralytics.nn.tasks import SegmentationModel
-    from ultralytics.utils import IterableSimpleNamespace
-    from ultralytics.utils.tal import TaskAlignedAssigner
-    import ultralytics.nn.modules as modules
-    import ultralytics.nn.modules.block as block_modules
-    import torch.nn.modules as torch_modules
-    import ultralytics.utils.loss as loss_modules
-    import dill._dill
-    from numpy.core.multiarray import scalar
-    try:
-        from numpy import dtype
-        from numpy.dtypes import Float64DType
-    except:
-        logging.error("[Impact Subpack] installed 'numpy' is outdated. Please update 'numpy>=1.26.4'")
-        raise Exception("[Impact Subpack] installed 'numpy' is outdated. Please update 'numpy>=1.26.4'")
+# try:
+#     from ultralytics import YOLO
+#     from ultralytics.nn.tasks import DetectionModel
+#     from ultralytics.nn.tasks import SegmentationModel
+#     from ultralytics.utils import IterableSimpleNamespace
+#     from ultralytics.utils.tal import TaskAlignedAssigner
+#     import ultralytics.nn.modules as modules
+#     import ultralytics.nn.modules.block as block_modules
+#     import torch.nn.modules as torch_modules
+#     import ultralytics.utils.loss as loss_modules
+#     import dill._dill
+#     from numpy.core.multiarray import scalar
+#     try:
+#         from numpy import dtype
+#         from numpy.dtypes import Float64DType
+#     except:
+#         logging.error("[Impact Subpack] installed 'numpy' is outdated. Please update 'numpy>=1.26.4'")
+#         raise Exception("[Impact Subpack] installed 'numpy' is outdated. Please update 'numpy>=1.26.4'")
 
 
-    torch_whitelist = []
+#     torch_whitelist = []
 
-except Exception as e:
-    logging.error(e)
-    logging.error("\n!!!!!\n\n[ComfyUI-Impact-Subpack] If this error occurs, please check the following link:\n\thttps://github.com/ltdrdata/ComfyUI-Impact-Pack/blob/Main/troubleshooting/TROUBLESHOOTING.md\n\n!!!!!\n")
-    raise e
+# except Exception as e:
+#     logging.error(e)
+#     logging.error("\n!!!!!\n\n[ComfyUI-Impact-Subpack] If this error occurs, please check the following link:\n\thttps://github.com/ltdrdata/ComfyUI-Impact-Pack/blob/Main/troubleshooting/TROUBLESHOOTING.md\n\n!!!!!\n")
+#     raise e
 
 # HOTFIX: https://github.com/ltdrdata/ComfyUI-Impact-Pack/issues/754
 # importing YOLO breaking original torch.load capabilities
@@ -314,6 +314,7 @@ torch.load = torch_wrapper
 
 
 def load_yolo(model_path: str):
+    from ultralytics import YOLO
     return YOLO(model_path)
     
 
